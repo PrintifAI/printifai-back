@@ -10,6 +10,6 @@ WORKDIR /opt/app
 
 COPY . .
 
-RUN yarn run build
+RUN yarn install && yarn run build
 
 CMD ["yarn", "node", "dist/main.js" ]

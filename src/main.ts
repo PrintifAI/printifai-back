@@ -4,20 +4,19 @@ import {
     FastifyAdapter,
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { WinstonModule } from 'nest-winston';
-import { Config } from './config/main';
-import { Logger } from './modules/logger/logger';
+import { Config } from './config/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Env } from './types/Env';
+import { log } from './modules/logger/logger';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
-        new FastifyAdapter(),
+        new FastifyAdapter({
+            logger: log,
+        }),
         {
-            logger: WinstonModule.createLogger({
-                instance: Logger,
-            }),
+            bufferLogs: true,
         },
     );
 
@@ -35,6 +34,6 @@ async function bootstrap() {
 
     await app.listen(Config.Port, '0.0.0.0');
 
-    Logger.info(await app.getUrl());
+    log.info(await app.getUrl());
 }
 bootstrap();
