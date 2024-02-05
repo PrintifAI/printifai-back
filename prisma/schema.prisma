@@ -1,0 +1,49 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum Size {
+    XS
+    S
+    M
+    L
+    XL
+    XXL
+}
+
+model Picture {
+    id        String   @id() @default(uuid())
+    blob      Bytes
+    prompt    String
+    keep      Boolean
+    createdAt DateTime @default(now())
+
+    items     Item[]
+}
+
+model Item {
+    id      Int     @id @default(autoincrement())
+    size    Size
+    type    String
+    pictureId String
+    price   Int
+    orderId   Int
+    createdAt DateTime @default(now())
+
+    order     Order    @relation(fields: [orderId], references: [id])
+    picture Picture @relation(fields: [pictureId], references: [id])
+}
+
+model Order {
+    id      Int    @id @default(autoincrement())
+    address String
+    createdAt DateTime @default(now())
+
+    items   Item[]
+}
