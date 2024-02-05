@@ -21,4 +21,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: printifai/back:latest
+          tags: vanchenkin/printifai:back-latest
