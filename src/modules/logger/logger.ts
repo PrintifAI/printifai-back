@@ -1,5 +1,7 @@
 import pino from 'pino';
 
+const LOG_FILE_DEST = './logs/all.log';
+
 export const log = pino({
     timestamp: pino.stdTimeFunctions.isoTime,
     transport: {
@@ -12,7 +14,7 @@ export const log = pino({
             {
                 level: 'trace',
                 target: 'pino/file',
-                options: { destination: './logs/all.log' },
+                options: { destination: LOG_FILE_DEST, mkdir: true },
             },
         ],
     },
