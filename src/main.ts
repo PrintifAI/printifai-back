@@ -17,6 +17,10 @@ async function bootstrap() {
         }),
         {
             rawBody: true,
+            cors: {
+                origin: Config.CLIENT_HOST,
+                credentials: true,
+            },
             bufferLogs: true,
         },
     );

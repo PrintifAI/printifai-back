@@ -10,6 +10,7 @@ export interface Config {
     YANDEX_API_TOKEN: string;
     YANDEX_API_HOST: string;
     WEBHOOK_HOST: string;
+    CLIENT_HOST: string;
 }
 
 export const Config: Config = {
@@ -21,4 +22,5 @@ export const Config: Config = {
     YANDEX_API_TOKEN: process.env.YANDEX_API_TOKEN!,
     YANDEX_API_HOST: process.env.YANDEX_API_HOST!,
     WEBHOOK_HOST: process.env.WEBHOOK_HOST!,
+    CLIENT_HOST: process.env.CLIENT_HOST!,
 };
