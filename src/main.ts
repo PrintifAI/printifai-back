@@ -18,7 +18,7 @@ async function bootstrap() {
         {
             rawBody: true,
             cors: {
-                origin: Config.CLIENT_HOST,
+                origin: Config.CLIENT_HOST ?? true,
                 credentials: true,
             },
             bufferLogs: true,
