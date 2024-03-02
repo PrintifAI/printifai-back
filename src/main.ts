@@ -6,8 +6,8 @@ import {
 } from '@nestjs/platform-fastify';
 import { Config } from './config/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Env } from './types/Env';
 import { log } from './modules/logger/logger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
@@ -16,23 +16,27 @@ async function bootstrap() {
             logger: log,
         }),
         {
+            rawBody: true,
             bufferLogs: true,
         },
     );
 
-    if (Config.Env != Env.Prod) {
-        const document = SwaggerModule.createDocument(
-            app,
-            new DocumentBuilder()
-                .setTitle('PrintifAI Back')
-                .setVersion('0.0')
-                .build(),
-        );
+    const document = SwaggerModule.createDocument(
+        app,
+        new DocumentBuilder()
+            .setTitle('PrintifAI Back')
+            .setVersion('1.0.0')
+            .build(),
+    );
 
-        SwaggerModule.setup('swagger', app, document);
-    }
+    SwaggerModule.setup('api/swagger', app, document);
 
-    await app.listen(Config.Port, '0.0.0.0');
+    app.setGlobalPrefix('api');
+
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+    app.enableShutdownHooks();
+
+    await app.listen(Config.PORT, '0.0.0.0');
 
     log.info(await app.getUrl());
 }
