@@ -130,7 +130,7 @@ export class QueryController {
                 },
                 data: {
                     status,
-                    predictionTime: body.metrics.predict_time || 0,
+                    predictionTime: body?.metrics?.predict_time || null,
                     output: image,
                 },
             });

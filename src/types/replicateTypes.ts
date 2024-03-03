@@ -10,7 +10,7 @@ export type ReplicatePrediction = {
     id: string;
     error: string | null;
     status: ReplicateStatus;
-    metrics: {
+    metrics?: {
         predict_time?: number;
     };
     output?: string[];
