@@ -22,6 +22,7 @@ import {
     ReplicateStatus,
 } from '../../types/replicateTypes';
 import { log } from '../../modules/logger/logger';
+import { FingerprintService } from '../../services/fingerprint.service';
 
 @Controller()
 export class QueryController {
@@ -30,10 +31,13 @@ export class QueryController {
         private readonly replicateService: ReplicateService,
         private readonly prismaService: PrismaService,
         private readonly imageService: ImageService,
+        private readonly fingerprintService: FingerprintService,
     ) {}
 
     @Post('query')
     async createPrediction(@Query() queryDto: QueryDto): Promise<Prediction> {
+        await this.fingerprintService.throttle(queryDto.fingerprint);
+
         const tranlatedPrompt = await this.translateService.translate(
             queryDto.prompt,
         );
@@ -52,6 +56,13 @@ export class QueryController {
                 translatedPrompt: tranlatedPrompt,
             },
         });
+    }
+
+    @Get('remaining')
+    async getRemain(
+        @Query('fingerprint') fingerprint: string,
+    ): Promise<number> {
+        return this.fingerprintService.remaining(fingerprint);
     }
 
     @Get('query/:id')

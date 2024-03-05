@@ -15,6 +15,8 @@ export class ReplicateService {
                     prompt,
                     width: 856,
                     height: 1208,
+                    apply_watermark: false,
+                    disable_safety_checker: true,
                 },
                 webhook: `${Config.WEBHOOK_HOST}/api/webhook/replicate`,
                 webhook_events_filter: ['completed'],

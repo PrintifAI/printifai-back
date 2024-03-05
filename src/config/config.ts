@@ -11,10 +11,13 @@ export interface Config {
     YANDEX_API_HOST: string;
     WEBHOOK_HOST: string;
     CLIENT_HOST: string;
+    REDIS_HOST: string;
+    REDIS_PORT: number;
+    REDIS_PASS: string;
 }
 
 export const Config: Config = {
-    PORT: parseInt(process.env.PORT || '3000', 10),
+    PORT: +(process.env.PORT || 3000),
     ENV: (process.env.NODE_ENV as Env) || Env.Prod,
     REPLICATE_WEBHOOK_SECRET: process.env.REPLICATE_WEBHOOK_SECRET!,
     REPLICATE_HOST: process.env.REPLICATE_HOST!,
@@ -23,4 +26,7 @@ export const Config: Config = {
     YANDEX_API_HOST: process.env.YANDEX_API_HOST!,
     WEBHOOK_HOST: process.env.WEBHOOK_HOST!,
     CLIENT_HOST: process.env.CLIENT_HOST!,
+    REDIS_HOST: process.env.REDIS_HOST!,
+    REDIS_PORT: +(process.env.REDIS_PORT || 6379),
+    REDIS_PASS: process.env.REDIS_PASS!,
 };

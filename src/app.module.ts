@@ -6,14 +6,17 @@ import { TranslateService } from './services/translate.service';
 import { ImageService } from './services/image.service';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './filters/exception.filter';
+import { FingerprintService } from './services/fingerprint.service';
+import { RedisModule } from './modules/redis/redis.module';
 
 @Module({
-    imports: [PrismaModule],
+    imports: [PrismaModule, RedisModule],
     controllers: [QueryController],
     providers: [
         ReplicateService,
         ImageService,
         TranslateService,
+        FingerprintService,
         {
             provide: APP_FILTER,
             scope: Scope.REQUEST,

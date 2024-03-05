@@ -5,4 +5,8 @@ export class QueryDto {
     @IsNotEmpty()
     @MaxLength(300)
     readonly prompt: string;
+
+    @IsString()
+    @IsNotEmpty()
+    readonly fingerprint: string;
 }
