@@ -21,6 +21,8 @@ model Prediction {
 
     status PredictionStatus @default(Created)
 
+    nodelete Boolean @default(false)
+
     createdAt DateTime @default(now())
 }
 
