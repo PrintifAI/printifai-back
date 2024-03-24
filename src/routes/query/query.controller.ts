@@ -40,7 +40,6 @@ export class QueryController {
         @Query() queryDto: QueryDto,
         @Ip() ip: string,
     ): Promise<Prediction> {
-        console.log(ip);
         await this.throttleService.throttle(ip);
 
         const tranlatedPrompt = await this.translateService.translate(
