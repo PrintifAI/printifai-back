@@ -8,17 +8,17 @@ const MAX_REQUESTS_NUMBERS = 10;
 const THROTTLE_TIME_IN_SECONDS = Config.ENV === Env.Local ? 1 : 60 * 60 * 24;
 
 @Injectable()
-export class FingerprintService {
+export class ThrottleService {
     constructor(private readonly redisService: RedisService) {}
 
-    async throttle(fingerprint: string): Promise<void> {
+    async throttle(value: string): Promise<void> {
         const count = +(
-            (await this.redisService.client.get(getRedisKey(fingerprint))) || 0
+            (await this.redisService.client.get(getRedisKey(value))) || 0
         );
 
         if (count < MAX_REQUESTS_NUMBERS) {
             this.redisService.client.set(
-                getRedisKey(fingerprint),
+                getRedisKey(value),
                 count + 1,
                 'EX',
                 THROTTLE_TIME_IN_SECONDS,
@@ -28,14 +28,10 @@ export class FingerprintService {
         }
     }
 
-    async remaining(fingerprint: string): Promise<number> {
+    async remaining(value: string): Promise<number> {
         return (
             MAX_REQUESTS_NUMBERS -
-            +(
-                (await this.redisService.client.get(
-                    getRedisKey(fingerprint),
-                )) || 0
-            )
+            +((await this.redisService.client.get(getRedisKey(value))) || 0)
         );
     }
 }

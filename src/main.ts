@@ -14,6 +14,7 @@ async function bootstrap() {
         AppModule,
         new FastifyAdapter({
             logger: log,
+            trustProxy: true,
         }),
         {
             rawBody: true,
@@ -44,4 +45,5 @@ async function bootstrap() {
 
     log.info(await app.getUrl());
 }
+
 bootstrap();

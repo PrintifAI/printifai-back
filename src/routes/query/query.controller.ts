@@ -4,6 +4,7 @@ import {
     Controller,
     Get,
     Header,
+    Ip,
     NotFoundException,
     Param,
     Post,
@@ -22,7 +23,7 @@ import {
     ReplicateStatus,
 } from '../../types/replicateTypes';
 import { log } from '../../modules/logger/logger';
-import { FingerprintService } from '../../services/fingerprint.service';
+import { ThrottleService } from '../../services/throttle.service';
 
 @Controller()
 export class QueryController {
@@ -31,12 +32,16 @@ export class QueryController {
         private readonly replicateService: ReplicateService,
         private readonly prismaService: PrismaService,
         private readonly imageService: ImageService,
-        private readonly fingerprintService: FingerprintService,
+        private readonly throttleService: ThrottleService,
     ) {}
 
     @Post('query')
-    async createPrediction(@Query() queryDto: QueryDto): Promise<Prediction> {
-        await this.fingerprintService.throttle(queryDto.fingerprint);
+    async createPrediction(
+        @Query() queryDto: QueryDto,
+        @Ip() ip: string,
+    ): Promise<Prediction> {
+        console.log(ip);
+        await this.throttleService.throttle(ip);
 
         const tranlatedPrompt = await this.translateService.translate(
             queryDto.prompt,
@@ -60,9 +65,10 @@ export class QueryController {
 
     @Get('remaining')
     async getRemain(
-        @Query('fingerprint') fingerprint: string,
+        // @Query('fingerprint') fingerprint: string,
+        @Ip() ip: string,
     ): Promise<number> {
-        return this.fingerprintService.remaining(fingerprint);
+        return this.throttleService.remaining(ip);
     }
 
     @Get('query/:id')

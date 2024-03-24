@@ -6,7 +6,7 @@ import { TranslateService } from './services/translate.service';
 import { ImageService } from './services/image.service';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './filters/exception.filter';
-import { FingerprintService } from './services/fingerprint.service';
+import { ThrottleService } from './services/throttle.service';
 import { RedisModule } from './modules/redis/redis.module';
 
 @Module({
@@ -16,7 +16,7 @@ import { RedisModule } from './modules/redis/redis.module';
         ReplicateService,
         ImageService,
         TranslateService,
-        FingerprintService,
+        ThrottleService,
         {
             provide: APP_FILTER,
             scope: Scope.REQUEST,
