@@ -26,6 +26,11 @@ async function bootstrap() {
         },
     );
 
+    app.setGlobalPrefix('api');
+
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+    app.enableShutdownHooks();
+
     const document = SwaggerModule.createDocument(
         app,
         new DocumentBuilder()
@@ -35,11 +40,6 @@ async function bootstrap() {
     );
 
     SwaggerModule.setup('api/swagger', app, document);
-
-    app.setGlobalPrefix('api');
-
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-    app.enableShutdownHooks();
 
     await app.listen(Config.PORT, '0.0.0.0');
 
