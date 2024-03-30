@@ -124,7 +124,7 @@ export class QueryController {
                 sourcePrompt: true,
                 removedBackground: {
                     where: {
-                        status: PredictionStatus.Created,
+                        status: PredictionStatus.Ready,
                     },
                     select: {
                         status: true,
@@ -157,5 +157,30 @@ export class QueryController {
         }
 
         return prediction.output;
+    }
+
+    @Get('query/:id/removed-background')
+    @Header('Content-Type', 'image/png')
+    async getRemovedBackgroundImage(
+        @Param('id') predictionId: string,
+    ): Promise<Buffer> {
+        const prediction = await this.prismaService.prediction.findFirst({
+            where: {
+                id: predictionId,
+            },
+            select: {
+                removedBackground: {
+                    where: {
+                        status: PredictionStatus.Ready,
+                    },
+                },
+            },
+        });
+
+        if (!prediction || !prediction.removedBackground.length) {
+            throw new NotFoundException('Изображение не найдено');
+        }
+
+        return prediction.removedBackground[0].output!;
     }
 }

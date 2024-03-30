@@ -5,7 +5,7 @@ import { Env } from '../types/Env';
 
 const getRedisThrottleKey = (throttleKey: string) => `throttle:${throttleKey}`;
 const MAX_REQUESTS_NUMBERS = 10;
-const THROTTLE_TIME_IN_SECONDS = Config.ENV === Env.Local ? 1 : 60 * 60 * 24;
+const THROTTLE_TIME_IN_SECONDS = Config.ENV === Env.Local ? 60 : 60 * 60 * 24;
 
 @Injectable()
 export class ThrottleService {
