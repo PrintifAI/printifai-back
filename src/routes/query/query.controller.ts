@@ -1,6 +1,5 @@
 import {
     BadRequestException,
-    Body,
     Controller,
     Get,
     Header,
@@ -9,21 +8,19 @@ import {
     Param,
     Post,
     Query,
-    UseGuards,
 } from '@nestjs/common';
 import { QueryDto } from './dto/query.dto';
 import { TranslateService } from '../../services/translate.service';
-import { Prediction, PredictionStatus } from '../../../generated/prisma';
-import { ReplicateWebhookGuard } from '../../guards/ReplicateWebhookGuard';
+import {
+    Prediction,
+    PredictionStatus,
+    RemoveBackground,
+} from '../../../generated/prisma';
 import { ReplicateService } from '../../services/replicate.service';
 import { PrismaService } from '../../modules/prisma/prisma.service';
 import { ImageService } from '../../services/image.service';
-import {
-    ReplicatePrediction,
-    ReplicateStatus,
-} from '../../types/replicateTypes';
-import { log } from '../../modules/logger/logger';
 import { ThrottleService } from '../../services/throttle.service';
+import { RemoveBackgroundDto } from './dto/removeBackground.dto';
 
 @Controller()
 export class QueryController {
@@ -62,6 +59,52 @@ export class QueryController {
         });
     }
 
+    @Post('remove-background')
+    async removeBackground(
+        @Query() queryDto: RemoveBackgroundDto,
+        @Ip() ip: string,
+    ): Promise<RemoveBackground> {
+        await this.throttleService.throttle(`remove-background:${ip}`);
+
+        const prediction = await this.prismaService.prediction.findUnique({
+            where: {
+                id: queryDto.predictionId,
+            },
+        });
+
+        if (!prediction) {
+            throw new NotFoundException('Prediction not found');
+        }
+
+        const replicateResponse =
+            await this.replicateService.createRemoveBackground(prediction);
+
+        if (replicateResponse.error) {
+            throw new BadRequestException(replicateResponse.error);
+        }
+
+        const removedBackground =
+            await this.prismaService.removeBackground.findFirst({
+                where: {
+                    status: {
+                        in: [PredictionStatus.Ready, PredictionStatus.Created],
+                    },
+                    predictionId: prediction.id,
+                },
+            });
+
+        if (removedBackground) {
+            throw new BadRequestException('Remove background unavailable');
+        }
+
+        return this.prismaService.removeBackground.create({
+            data: {
+                externalId: replicateResponse.id,
+                predictionId: prediction.id,
+            },
+        });
+    }
+
     @Get('remaining')
     async getRemain(
         // @Query('fingerprint') fingerprint: string,
@@ -82,6 +125,14 @@ export class QueryController {
                 id: true,
                 status: true,
                 sourcePrompt: true,
+                removedBackground: {
+                    where: {
+                        status: PredictionStatus.Created,
+                    },
+                    select: {
+                        status: true,
+                    },
+                },
             },
         });
 
@@ -109,47 +160,5 @@ export class QueryController {
         }
 
         return prediction.output;
-    }
-
-    @Post('webhook/replicate')
-    @UseGuards(ReplicateWebhookGuard)
-    async predictionWebhook(@Body() body: ReplicatePrediction): Promise<void> {
-        const prediction = await this.prismaService.prediction.findFirst({
-            where: {
-                predictionId: body.id,
-            },
-        });
-
-        if (!prediction) {
-            throw new NotFoundException('Prediction not found');
-        }
-
-        let image: Buffer | null = null;
-        let status: PredictionStatus = PredictionStatus.Created;
-        try {
-            if (body.output?.length) {
-                image = await this.imageService.downloadImage(body.output[0]);
-            }
-
-            if (body.status === ReplicateStatus.Succeeded) {
-                status = PredictionStatus.Ready;
-            } else {
-                status = PredictionStatus.Failed;
-            }
-        } catch (e) {
-            status = PredictionStatus.Failed;
-            log.error(e);
-        } finally {
-            await this.prismaService.prediction.update({
-                where: {
-                    predictionId: body.id,
-                },
-                data: {
-                    status,
-                    predictionTime: body?.metrics?.predict_time || null,
-                    output: image,
-                },
-            });
-        }
     }
 }

@@ -13,7 +13,7 @@ export type ReplicatePrediction = {
     metrics?: {
         predict_time?: number;
     };
-    output?: string[];
+    output?: unknown;
 };
 
 export type ReplicateWebhookBody = {

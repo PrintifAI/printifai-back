@@ -8,10 +8,11 @@ import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './filters/exception.filter';
 import { ThrottleService } from './services/throttle.service';
 import { RedisModule } from './modules/redis/redis.module';
+import { WebhookController } from './routes/webhook/webhook.controller';
 
 @Module({
     imports: [PrismaModule, RedisModule],
-    controllers: [QueryController],
+    controllers: [QueryController, WebhookController],
     providers: [
         ReplicateService,
         ImageService,

@@ -8,14 +8,20 @@ datasource db {
     url      = env("POSTGRES_URL")
 }
 
-model Prediction {
-    id        String   @id() @default(uuid())
+enum PredictionStatus {
+    Created
+    Failed
+    Ready
+}
 
-    sourcePrompt String
+model Prediction {
+    id String @id() @default(uuid())
+
+    sourcePrompt     String
     translatedPrompt String
 
     predictionId String @unique
-    output      Bytes?
+    output       Bytes?
 
     predictionTime Int?
 
@@ -23,7 +29,25 @@ model Prediction {
 
     nodelete Boolean @default(false)
 
+    createdAt        DateTime           @default(now())
+
+    removedBackground RemoveBackground[]
+}
+
+model RemoveBackground {
+    predictionId String
+
+    externalId String @unique
+
+    status PredictionStatus @default(Created)
+
+    output Bytes?
+
+    predictionTime Int?
+
     createdAt DateTime @default(now())
+
+    prediction Prediction @relation(fields: [predictionId], references: [id], onDelete: Cascade)
 }
 
 // enum Size {
@@ -34,14 +58,6 @@ model Prediction {
 //     XL
 //     XXL
 // }
-
-enum PredictionStatus {
-    Created
-    Failed
-    Ready
-}
-
-
 
 // model Item {
 //     id      Int     @id @default(autoincrement())

@@ -12,19 +12,26 @@ export class ThrottleService {
     constructor(private readonly redisService: RedisService) {}
 
     async throttle(value: string): Promise<void> {
-        const count = +(
-            (await this.redisService.client.get(getRedisKey(value))) || 0
-        );
-
-        if (count < MAX_REQUESTS_NUMBERS) {
-            this.redisService.client.set(
-                getRedisKey(value),
-                count + 1,
-                'EX',
-                THROTTLE_TIME_IN_SECONDS,
+        try {
+            const count = +(
+                (await this.redisService.client.get(getRedisKey(value))) || 0
             );
-        } else {
-            throw new BadRequestException('Слишком много запросов');
+
+            if (count < MAX_REQUESTS_NUMBERS) {
+                this.redisService.client.set(
+                    getRedisKey(value),
+                    count + 1,
+                    'EX',
+                    THROTTLE_TIME_IN_SECONDS,
+                );
+            } else {
+                throw new BadRequestException('Слишком много запросов');
+            }
+        } catch (e) {
+            if (!(e instanceof BadRequestException)) {
+                return;
+            }
+            throw e;
         }
     }
 
