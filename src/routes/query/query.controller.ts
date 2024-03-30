@@ -18,7 +18,6 @@ import {
 } from '../../../generated/prisma';
 import { ReplicateService } from '../../services/replicate.service';
 import { PrismaService } from '../../modules/prisma/prisma.service';
-import { ImageService } from '../../services/image.service';
 import { ThrottleService } from '../../services/throttle.service';
 import { RemoveBackgroundDto } from './dto/removeBackground.dto';
 
@@ -28,7 +27,6 @@ export class QueryController {
         private readonly translateService: TranslateService,
         private readonly replicateService: ReplicateService,
         private readonly prismaService: PrismaService,
-        private readonly imageService: ImageService,
         private readonly throttleService: ThrottleService,
     ) {}
 
