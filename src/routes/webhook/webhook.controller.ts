@@ -71,7 +71,6 @@ export class WebhookController {
     async removeBackgroundWebhook(
         @Body() body: ReplicatePrediction,
     ): Promise<void> {
-        console.log(body);
         const replicatePrediction =
             await this.prismaService.removeBackground.findUnique({
                 where: {

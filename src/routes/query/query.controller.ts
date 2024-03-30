@@ -122,7 +122,11 @@ export class QueryController {
                 sourcePrompt: true,
                 removedBackground: {
                     where: {
-                        status: PredictionStatus.Ready,
+                        status: {
+                            not: {
+                                in: [PredictionStatus.Failed],
+                            },
+                        },
                     },
                     select: {
                         status: true,
