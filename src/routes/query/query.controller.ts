@@ -76,13 +76,6 @@ export class QueryController {
             throw new NotFoundException('Prediction not found');
         }
 
-        const replicateResponse =
-            await this.replicateService.createRemoveBackground(prediction);
-
-        if (replicateResponse.error) {
-            throw new BadRequestException(replicateResponse.error);
-        }
-
         const removedBackground =
             await this.prismaService.removeBackground.findFirst({
                 where: {
@@ -97,6 +90,13 @@ export class QueryController {
             throw new BadRequestException('Remove background unavailable');
         }
 
+        const replicateResponse =
+            await this.replicateService.createRemoveBackground(prediction);
+
+        if (replicateResponse.error) {
+            throw new BadRequestException(replicateResponse.error);
+        }
+
         return this.prismaService.removeBackground.create({
             data: {
                 externalId: replicateResponse.id,
@@ -106,10 +106,7 @@ export class QueryController {
     }
 
     @Get('remaining')
-    async getRemain(
-        // @Query('fingerprint') fingerprint: string,
-        @Ip() ip: string,
-    ): Promise<number> {
+    async getRemain(@Ip() ip: string): Promise<number> {
         return this.throttleService.remaining(ip);
     }
 
