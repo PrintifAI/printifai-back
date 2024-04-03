@@ -20,6 +20,7 @@ import { ReplicateService } from '../../services/replicate.service';
 import { PrismaService } from '../../modules/prisma/prisma.service';
 import { ThrottleService } from '../../services/throttle.service';
 import { RemoveBackgroundDto } from './dto/removeBackground.dto';
+import { GetQueriesDto } from './dto/getQueries.dto';
 
 @Controller()
 export class QueryController {
@@ -58,11 +59,16 @@ export class QueryController {
     }
 
     @Get('query')
-    async getQueries(): Promise<Partial<Prediction>[]> {
-        return this.prismaService.prediction.findMany({
+    async getQueries(@Query() { size = 10, page = 0 }: GetQueriesDto): Promise<{
+        data: Partial<Prediction>[];
+        count: number;
+    }> {
+        const queries = await this.prismaService.prediction.findMany({
             where: {
                 nodelete: true,
             },
+            skip: page * size,
+            take: size,
             select: {
                 id: true,
                 status: true,
@@ -81,6 +87,16 @@ export class QueryController {
                 },
             },
         });
+
+        const count = await this.prismaService.prediction.count({
+            where: {
+                nodelete: true,
+            },
+        });
+        return {
+            data: queries,
+            count,
+        };
     }
 
     @Post('remove-background')
