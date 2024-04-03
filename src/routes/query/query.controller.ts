@@ -57,6 +57,32 @@ export class QueryController {
         });
     }
 
+    @Get('query')
+    async getQueries(): Promise<Partial<Prediction>[]> {
+        return this.prismaService.prediction.findMany({
+            where: {
+                nodelete: true,
+            },
+            select: {
+                id: true,
+                status: true,
+                sourcePrompt: true,
+                removedBackground: {
+                    where: {
+                        status: {
+                            not: {
+                                in: [PredictionStatus.Failed],
+                            },
+                        },
+                    },
+                    select: {
+                        status: true,
+                    },
+                },
+            },
+        });
+    }
+
     @Post('remove-background')
     async removeBackground(
         @Query() queryDto: RemoveBackgroundDto,
