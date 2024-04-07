@@ -39,6 +39,7 @@
   - локально "http://localhost:3000"
 - REDIS_HOST - хост redis
 - REDIS_PASS - токен для авторизации в redis, если есть
+- ADMIN_TOKEN - токен для авторизации в панели администратора
 
 ## Локальный запуск проекта
 
@@ -82,6 +83,11 @@ docker run -d -t -i \
 -e CLIENT_HOST="https://printifai.ru" \
 -e REDIS_HOST="printifai.ru" \
 -e REDIS_PASS="" \
+-e ADMIN_TOKEN="" \
 -p 3005:3005 \
 --name pritinfai-back vanchenkin/printifai:back-latest
 ```
+
+## Вход в админ панель
+
+Перейти по адресу /admin?token=, подставив значение переменной ADMIN_TOKEN.

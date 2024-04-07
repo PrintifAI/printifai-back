@@ -9,10 +9,11 @@ import { AllExceptionsFilter } from './filters/exception.filter';
 import { ThrottleService } from './services/throttle.service';
 import { RedisModule } from './modules/redis/redis.module';
 import { WebhookController } from './routes/webhook/webhook.controller';
+import { OrderController } from './routes/order/order.controller';
 
 @Module({
     imports: [PrismaModule, RedisModule],
-    controllers: [QueryController, WebhookController],
+    controllers: [QueryController, WebhookController, OrderController],
     providers: [
         ReplicateService,
         ImageService,

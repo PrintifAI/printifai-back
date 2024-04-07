@@ -29,7 +29,7 @@ model Prediction {
 
     nodelete Boolean @default(false)
 
-    createdAt        DateTime           @default(now())
+    createdAt DateTime @default(now())
 
     removedBackground RemoveBackground[]
 }
@@ -50,34 +50,21 @@ model RemoveBackground {
     prediction Prediction @relation(fields: [predictionId], references: [id], onDelete: Cascade)
 }
 
-// enum Size {
-//     XS
-//     S
-//     M
-//     L
-//     XL
-//     XXL
-// }
+enum OrderStatus {
+    Created
+    Producing
+    Sending
+    Sent
+    Returned
+    Completed
+}
 
-// model Item {
-//     id      Int     @id @default(autoincrement())
-//     size    Size
-//     type    String
-//     pictureId String
-//     price   Int
-//     orderId   Int
-//     createdAt DateTime @default(now())
+model Order {
+    id Int @id @default(autoincrement())
 
-//     order     Order    @relation(fields: [orderId], references: [id])
-//     picture Picture @relation(fields: [pictureId], references: [id])
-// }
+    status OrderStatus @default(Created)
 
-// model Order {
-//     id      Int    @id @default(autoincrement())
+    data Json
 
-//     address String
-
-//     createdAt DateTime @default(now())
-
-//     items   Item[]
-// }
+    createdAt DateTime @default(now())
+}

@@ -14,6 +14,7 @@ export interface Config {
     REDIS_HOST: string;
     REDIS_PORT: number;
     REDIS_PASS: string;
+    ADMIN_TOKEN: string;
 }
 
 export const Config: Config = {
@@ -29,4 +30,5 @@ export const Config: Config = {
     REDIS_HOST: process.env.REDIS_HOST!,
     REDIS_PORT: +(process.env.REDIS_PORT || 6379),
     REDIS_PASS: process.env.REDIS_PASS!,
+    ADMIN_TOKEN: process.env.ADMIN_TOKEN!,
 };
