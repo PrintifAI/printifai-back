@@ -8,7 +8,7 @@
 
 ## Требования для запуска
 
-- node.js 18+
+- node.js 20+
 - yarn 4+
 - Postgres 13+
 - Redis
