@@ -10,6 +10,6 @@ WORKDIR /opt/app
 
 COPY . .
 
-RUN corepack enable yarn && yarn install && yarn run build
+RUN corepack enable && yarn install && yarn run build
 
 CMD ["yarn", "node", "dist/main.js" ]
