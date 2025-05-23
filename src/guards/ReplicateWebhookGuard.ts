@@ -29,9 +29,13 @@ export class ReplicateWebhookGuard implements CanActivate {
             .update(signedContent)
             .digest('base64');
 
-        const webhookSignatures = request.headers[
-            'webhook-signature'
-        ]! as string;
+        const webhookSignatures = request.headers['webhook-signature'] as
+            | string
+            | undefined;
+
+        if (!webhookSignatures) {
+            return false;
+        }
 
         const expectedSignatures = webhookSignatures
             .split(' ')
