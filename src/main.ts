@@ -6,14 +6,14 @@ import {
 } from '@nestjs/platform-fastify';
 import { Config } from './config/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { log } from './modules/logger/logger';
 import { ValidationPipe } from '@nestjs/common';
+import { log } from './modules/logger/logger';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
         new FastifyAdapter({
-            logger: log,
+            logger: true,
             trustProxy: true,
         }),
         {
@@ -22,7 +22,6 @@ async function bootstrap() {
                 origin: Config.CLIENT_HOST ?? true,
                 credentials: true,
             },
-            bufferLogs: true,
         },
     );
 

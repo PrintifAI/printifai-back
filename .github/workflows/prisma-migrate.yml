@@ -1,0 +1,38 @@
+name: Run Prisma Migrations
+
+on:
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Extract DATABASE_URL from ENV_FILE
+        id: extract_db_url
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env.temp
+          DATABASE_URL=$(grep DATABASE_URL .env.temp | cut -d '=' -f2-)
+          echo "::add-mask::$DATABASE_URL"
+          echo "database_url=$DATABASE_URL" >> $GITHUB_OUTPUT
+          rm .env.temp
+
+      - name: Run Prisma Migrations
+        env:
+          DATABASE_URL: ${{ steps.extract_db_url.outputs.database_url }}
+        run: |
+          echo "Running Prisma migrations..."
+          npx prisma migrate deploy

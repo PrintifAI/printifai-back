@@ -12,7 +12,7 @@ export class ReplicateService {
             `${Config.REPLICATE_HOST}/predictions`,
             {
                 version:
-                    '39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b',
+                    '7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc',
                 input: {
                     prompt,
                     width: 856,
@@ -39,7 +39,7 @@ export class ReplicateService {
             `${Config.REPLICATE_HOST}/predictions`,
             {
                 version:
-                    '95fcc2a26d3899cd6c2691c900465aaeff466285a65c14638cc5f36f34befaf1',
+                    'fb8af171cfa1616ddcf1242c093f9c46bcada5ad4cf6f2fbe8b81b330ec5c003',
                 input: {
                     image: getImageLink(prediction.id),
                 },

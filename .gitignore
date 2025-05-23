@@ -1,18 +1,9 @@
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-
-# Swap the comments on the following lines if you don't wish to use zero-installs
-# Documentation here: https://yarnpkg.com/features/zero-installs
-# !.yarn/cache
-.pnp.*
-
 # compiled output
-/dist
-/node_modules
+dist
+node_modules
+
+.env
+/env
 
 # Logs
 logs
@@ -46,12 +37,8 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# logs
-/logs
-
-# env
 .env*
-!.env*.example
+!.env.example
 
-# generated
-generated/*
+generated/
+logs/

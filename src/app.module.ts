@@ -10,9 +10,10 @@ import { ThrottleService } from './services/throttle.service';
 import { RedisModule } from './modules/redis/redis.module';
 import { WebhookController } from './routes/webhook/webhook.controller';
 import { OrderController } from './routes/order/order.controller';
+import { HealthModule } from './routes/health/health.module';
 
 @Module({
-    imports: [PrismaModule, RedisModule],
+    imports: [PrismaModule, RedisModule, HealthModule],
     controllers: [QueryController, WebhookController, OrderController],
     providers: [
         ReplicateService,

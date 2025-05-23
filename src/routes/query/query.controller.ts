@@ -3,6 +3,7 @@ import {
     Controller,
     Get,
     Header,
+    InternalServerErrorException,
     Ip,
     NotFoundException,
     Param,
@@ -186,7 +187,9 @@ export class QueryController {
 
     @Get('query/:id/image')
     @Header('Content-Type', 'image/png')
-    async getPredictionOutout(@Param('id') queryId: string): Promise<Buffer> {
+    async getPredictionOutput(
+        @Param('id') queryId: string,
+    ): Promise<Uint8Array<ArrayBufferLike>> {
         const prediction = await this.prismaService.prediction.findUnique({
             where: {
                 id: queryId,
@@ -207,7 +210,7 @@ export class QueryController {
     @Header('Content-Type', 'image/png')
     async getRemovedBackgroundImage(
         @Param('id') predictionId: string,
-    ): Promise<Buffer> {
+    ): Promise<Uint8Array<ArrayBufferLike>> {
         const prediction = await this.prismaService.prediction.findFirst({
             where: {
                 id: predictionId,
@@ -225,6 +228,10 @@ export class QueryController {
             throw new NotFoundException('Изображение не найдено');
         }
 
-        return prediction.removedBackground[0].output!;
+        if (!prediction.removedBackground[0].output) {
+            throw new InternalServerErrorException('Изображение не найдено');
+        }
+
+        return prediction.removedBackground[0].output;
     }
 }

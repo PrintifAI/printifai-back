@@ -1,3 +1,31 @@
-.yarn/sdks
-docs
+# Dependencies
+node_modules
+npm-debug.log
+
+# Build output
+dist
+build
+coverage
+
+# Environment files
+.env
+.env.*
+
+# Git and development files
+.git
+.gitignore
+.github
 .vscode
+README.md
+
+# Tests
+test
+**/*.spec.ts
+**/*.test.ts
+
+# Miscellaneous
+.DS_Store
+*.log 
+
+.wwebjs_auth
+.wwebjs_cache
